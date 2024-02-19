@@ -1,0 +1,8 @@
+with cte as (select *
+,ROW_NUMBER() over (order by age) asc_rn
+,ROW_NUMBER() over (order by age desc) desc_rn
+from employee)
+
+select avg(age)
+from cte
+where abs(asc_rn-desc_rn)<=1
