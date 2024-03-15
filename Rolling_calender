@@ -1,0 +1,30 @@
+with anchor_calender as (
+  select cast('1995-01-01' as date) as cal_date
+  ,DATEPART(yy,'1995-01-01') as cal_year
+  ,DATEPART(DAYOFYEAR,'1995-01-01') as cal_year_day
+  ,concat('Q',DATEPART(q,'1995-01-01')) as cal_quarter
+  ,DATEPART(month,'1995-01-01') as cal_month
+  ,DATENAME(month,'1995-01-01') as cal_month_name
+  ,DATEPART(day,'1995-01-01') as cal_month_day
+  ,DATEPART(week,'1995-01-01') as cal_week
+  ,DATEPART(weekday,'1995-01-01') as cal_week_day
+  ,DATENAME(weekday,'1995-01-01') as cal_day_name
+
+  union all
+
+  select DATEADD(day,1,cal_date) as cal_date
+  ,DATEPART(yy,DATEADD(day,1,cal_date)) as cal_year
+  ,DATEPART(DAYOFYEAR,DATEADD(d,1,cal_date)) as cal_year_day
+  ,concat('Q',DATEPART(q,DATEADD(d,1,cal_date))) as cal_quarter
+  ,DATEPART(month,DATEADD(d,1,cal_date)) as cal_month
+  ,DATENAME(month,DATEADD(d,1,cal_date)) as cal_month_name
+  ,DATEPART(day,DATEADD(d,1,cal_date)) as cal_month_day
+  ,DATEPART(week,DATEADD(d,1,cal_date)) as cal_week
+  ,DATEPART(weekday,DATEADD(d,1,cal_date)) as cal_week_day
+  ,DATENAME(weekday,DATEADD(d,1,cal_date)) as cal_day_name
+  from anchor_calender
+  where cal_date<CAST('2024-12-31' as date)
+)
+
+select ROW_NUMBER() over (order by cal_date) as id ,* from anchor_calender
+option (maxrecursion 32676)
