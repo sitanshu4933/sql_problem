@@ -1,0 +1,11 @@
+select Timeframe,Timeframe_id
+
+,SUM(case when order_date between start_date_ty and end_date_ty then sales end) This_year_sales
+,SUM(case when order_date between start_date_ly and end_date_ly then sales end) Last_year_sales
+,SUM(case when order_date between start_date_lly and end_date_lly then sales end) Last_to_Last_year_sales
+
+from orders join timeframes on order_date between start_date_ty and end_date_ty
+or order_date between start_date_ly and end_date_ly
+or order_date between start_date_lly and end_date_lly
+group by Timeframe,Timeframe_id
+order by case when Timeframe='month' then 1 else 0 end,Timeframe,LEN(Timeframe) desc,Timeframe_id
