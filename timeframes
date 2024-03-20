@@ -1,0 +1,75 @@
+with today as (select * from calender_dim 
+where cal_date = CAST(getdate() as date) 
+)
+,cal as(
+select c.*,t.cal_year as todays_year,t.cal_month_day as current_cal_month_day
+,t.cal_month as todays_month,t.cal_quarter as todays_quarter
+from calender_dim c cross join today t 
+where c.cal_year between t.cal_year-2 and t.cal_year)
+
+--FY
+select 'FY' as timeframe, 'FY' as timeframe_id,
+MIN(case when cal_year=todays_year then cal_date end) as start_date_ty
+,MAX(case when cal_year=todays_year then cal_date end) as end_date_ty
+,MIN(case when cal_year=todays_year-1 then cal_date end) as start_date_ly
+,MAX(case when cal_year=todays_year-1 then cal_date end) as end_date_ly
+,MIN(case when cal_year=todays_year-2 then cal_date end) as start_date_lly
+,MAX(case when cal_year=todays_year-2 then cal_date end) as end_date_lly
+from cal
+
+Union All
+
+select 'YTD' as timeframe, 'YTD' as timeframe_id,
+MIN(case when cal_year=todays_year then cal_date end) as start_date_ty
+,MAX(case when cal_year=todays_year then cal_date end) as end_date_ty
+,MIN(case when cal_year=todays_year-1 then cal_date end) as start_date_ly
+,MAX(case when cal_year=todays_year-1 then cal_date end) as end_date_ly
+,MIN(case when cal_year=todays_year-2 then cal_date end) as start_date_lly
+,MAX(case when cal_year=todays_year-2 then cal_date end) as end_date_lly
+from cal
+where cal.cal_year_day<=current_cal_month_day
+Union All
+select 'MTD' as timeframe, 'MTD' as timeframe_id,
+MIN(case when cal_year=todays_year then cal_date end) as start_date_ty
+,MAX(case when cal_year=todays_year then cal_date end) as end_date_ty
+,MIN(case when cal_year=todays_year-1 then cal_date end) as start_date_ly
+,MAX(case when cal_year=todays_year-1 then cal_date end) as end_date_ly
+,MIN(case when cal_year=todays_year-2 then cal_date end) as start_date_lly
+,MAX(case when cal_year=todays_year-2 then cal_date end) as end_date_lly
+from cal
+where cal_month=todays_month
+
+Union All
+
+select 'QTD' as timeframe, 'QTD' as timeframe_id,
+MIN(case when cal_year=todays_year then cal_date end) as start_date_ty
+,MAX(case when cal_year=todays_year then cal_date end) as end_date_ty
+,MIN(case when cal_year=todays_year-1 then cal_date end) as start_date_ly
+,MAX(case when cal_year=todays_year-1 then cal_date end) as end_date_ly
+,MIN(case when cal_year=todays_year-2 then cal_date end) as start_date_lly
+,MAX(case when cal_year=todays_year-2 then cal_date end) as end_date_lly
+from cal
+where cal_quarter=todays_quarter
+Union All
+
+select 'QUARTER' as timeframe, cal_quarter as timeframe_id,
+MIN(case when cal_year=todays_year then cal_date end) as start_date_ty
+,MAX(case when cal_year=todays_year then cal_date end) as end_date_ty
+,MIN(case when cal_year=todays_year-1 then cal_date end) as start_date_ly
+,MAX(case when cal_year=todays_year-1 then cal_date end) as end_date_ly
+,MIN(case when cal_year=todays_year-2 then cal_date end) as start_date_lly
+,MAX(case when cal_year=todays_year-2 then cal_date end) as end_date_lly
+from cal
+group by cal_quarter
+
+Union All
+
+select 'MONTH' as timeframe, cast(cal_month as varchar(2)) as timeframe_id,
+MIN(case when cal_year=todays_year then cal_date end) as start_date_ty
+,MAX(case when cal_year=todays_year then cal_date end) as end_date_ty
+,MIN(case when cal_year=todays_year-1 then cal_date end) as start_date_ly
+,MAX(case when cal_year=todays_year-1 then cal_date end) as end_date_ly
+,MIN(case when cal_year=todays_year-2 then cal_date end) as start_date_lly
+,MAX(case when cal_year=todays_year-2 then cal_date end) as end_date_lly
+from cal
+group by cal_month
