@@ -1,3 +1,5 @@
+--This query results all bi_matrics such as Sales over FY,YOY,YTD,MTD,QTD,QUARTER,MONTH wise
+--Timeframe table is available at-https://github.com/sitanshu4933/sql_problem/blob/main/timeframes
 select Timeframe,Timeframe_id
 
 ,SUM(case when order_date between start_date_ty and end_date_ty then sales end) This_year_sales
