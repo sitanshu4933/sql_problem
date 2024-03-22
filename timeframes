@@ -1,3 +1,6 @@
+--This query results from Rolling_calender table and it helps to find bi_matrics table
+--Find the Rolling_calender query here-https://github.com/sitanshu4933/sql_problem/blob/main/Rolling_calender
+
 with today as (select * from calender_dim 
 where cal_date = CAST(getdate() as date) 
 )
